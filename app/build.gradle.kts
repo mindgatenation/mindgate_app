@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
 }
 
 android {
@@ -64,4 +66,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.9.6")
 //    viewmodel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
+//    dagger-hilt
+    implementation("com.google.dagger:hilt-android:2.57.2")
+    kapt("com.google.dagger:hilt-compiler:2.57.2")
 }
