@@ -1,5 +1,6 @@
 package com.mindgate.mindgateapp.ui.screens.onboarding
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,11 +26,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -37,6 +40,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.mindgate.mindgateapp.BuildConfig
 import com.mindgate.mindgateapp.R
 import com.mindgate.mindgateapp.accentColor
 import com.mindgate.mindgateapp.baseColor
@@ -46,9 +56,18 @@ import com.mindgate.mindgateapp.mindgate_logo
 import com.mindgate.mindgateapp.reg_font
 import com.mindgate.mindgateapp.semibold_font
 import com.mindgate.mindgateapp.ui.components.ActionButton
+import com.mindgate.mindgateapp.viewmodels.OnboardingViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier.padding(horizontal = 20.dp)) {
+fun LoginScreen(
+    modifier: Modifier = Modifier.padding(horizontal = 20.dp),
+    vm: OnboardingViewModel= hiltViewModel()
+) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val credentialManager = CredentialManager.create(context)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -128,7 +147,9 @@ fun LoginScreen(modifier: Modifier = Modifier.padding(horizontal = 20.dp)) {
                     Icon(Icons.Default.East, contentDescription = null, tint = greenColor)
                 },
                 plcHldrRight = true,
-                modifier = Modifier.align(Alignment.CenterHorizontally).padding(vertical = 7.dp, horizontal = 10.dp)
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 7.dp, horizontal = 10.dp)
             ) {
 
             }
@@ -138,12 +159,49 @@ fun LoginScreen(modifier: Modifier = Modifier.padding(horizontal = 20.dp)) {
                     Image(
                         painterResource(R.drawable.google_logo),
                         contentDescription = "google_logo",
-                        modifier = Modifier.size(27.dp).padding(end = 5.dp)
+                        modifier = Modifier
+                            .size(27.dp)
+                            .padding(end = 5.dp)
                     )
                 },
                 plcHldrRight = false,
-                modifier = Modifier.align(Alignment.CenterHorizontally).padding(vertical = 5.dp, horizontal = 5.dp)
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 5.dp, horizontal = 5.dp)
             ) {
+                val googleIdOption = GetGoogleIdOption.Builder()
+                    .setFilterByAuthorizedAccounts(false)
+                    .setServerClientId(BuildConfig.WEB_CLIENT_ID)
+                    .build()
+
+                val request = GetCredentialRequest.Builder()
+                    .addCredentialOption(googleIdOption)
+                    .build()
+
+                coroutineScope.launch {
+                    val result = credentialManager.getCredential(
+                        request = request,
+                        context = context
+                    )
+
+                    val credential = result.credential
+
+                    if (
+                        credential is CustomCredential &&
+                        credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+                    ) {
+                        val googleIdTokenCredential =
+                            GoogleIdTokenCredential.createFrom(credential.data)
+
+                        val idToken = googleIdTokenCredential.idToken
+
+                        vm.signInWithGoogle(idToken)
+
+                    } else {
+                        Log.e("CredExp", "Unexpected credential type")
+                    }
+
+                }
 
             }
 
