@@ -66,7 +66,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier.padding(horizontal = 20.dp),
-    vm: OnboardingViewModel= hiltViewModel()
+    vm: OnboardingViewModel= hiltViewModel(),
+    onPasswordLogin : () -> Unit
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -109,7 +110,7 @@ fun LoginScreen(
                 Text(
                     text = "MINDGATE",
                     fontFamily = semibold_font,
-                    color = Color.Black,
+                    color = accentColor,
                     fontSize = 12.sp,
                     letterSpacing = 1.sp,
                 )
@@ -155,7 +156,7 @@ fun LoginScreen(
                     .align(Alignment.CenterHorizontally)
                     .padding(vertical = 7.dp, horizontal = 10.dp)
             ) {
-
+                onPasswordLogin()
             }
             ActionButton(
                 text ="Continue with Google",
@@ -339,5 +340,5 @@ fun TextBanner(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 private fun LoginScreenPreview() {
-    LoginScreen()
+    LoginScreen(){}
 }

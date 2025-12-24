@@ -11,6 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
+import com.mindgate.mindgateapp.ui.navigation.mainNavGraph
+import com.mindgate.mindgateapp.ui.navigation.onboardNavGraph
 import com.mindgate.mindgateapp.ui.screens.onboarding.LoginScreen
 import com.mindgate.mindgateapp.ui.theme.MindgateTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,25 +27,30 @@ class MainActivity : ComponentActivity() {
         setContent {
             MindgateTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginScreen(modifier = Modifier.padding(innerPadding))
+                    val navController = rememberNavController()
+
+                    NavHost(
+                        navController = navController,
+                        startDestination = RootRoutes.ONBOARD,
+                    ) {
+                        onboardNavGraph(navController,Modifier.padding(innerPadding))
+                        mainNavGraph(navController)
+                    }
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+
+object RootRoutes {
+    const val ONBOARD = "onboard_graph"
+    const val MAIN = "main_graph"
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     MindgateTheme {
-        Greeting("Android")
     }
 }
