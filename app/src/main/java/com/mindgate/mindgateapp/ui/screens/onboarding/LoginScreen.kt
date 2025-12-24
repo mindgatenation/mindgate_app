@@ -184,48 +184,40 @@ fun LoginScreen(
                     .build()
 
                 coroutineScope.launch {
-                    try {
-
-
-                        val result = credentialManager.getCredential(
-                            request = request,
-                            context = context
+                    runCatching {
+                        credentialManager.getCredential(
+                            context = context,
+                            request = request
                         )
-
+                    }.onSuccess { result ->
                         val credential = result.credential
 
                         if (
                             credential is CustomCredential &&
                             credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
                         ) {
-                            val googleIdTokenCredential =
+                            val googleCred =
                                 GoogleIdTokenCredential.createFrom(credential.data)
+                            vm.signInWithGoogle(googleCred.idToken)
+                        }
+                    }.onFailure { throwable ->
+                        when (throwable) {
+                            is NoCredentialException -> {
+                                Log.d("CredExp", "No credential available (expected)")
+                                Toast.makeText(context,"No credential available. Please login with Password", Toast.LENGTH_SHORT).show()
+                            }
 
-                            val idToken = googleIdTokenCredential.idToken
+                            is GetCredentialCancellationException -> {
+                                Log.d("CredExp", "User cancelled")
+                            }
 
-                            vm.signInWithGoogle(idToken)
-
-                        } else {
-                            Log.e("CredExp", "Unexpected credential type")
+                            else -> {
+                                Log.e("CredExp", "Unexpected error", throwable)
+                            }
                         }
                     }
-                    catch (e: GetCredentialCancellationException) {
-                            // User cancelled the One Tap prompt — just log it or ignore
-                            Log.d("CredExp", "User cancelled One Tap")
-                    }
-                    catch (e: NoCredentialException) {
-                            // No credentials saved on the device — show a toast or fallback
-                            Toast.makeText(context, "No credentials available. Please add a Google Account on the device or check you internet connection.", Toast.LENGTH_SHORT).show()
-                    }
-                    catch (e: GetCredentialException) {
-                            // Other credential errors
-                            Log.e("CredExp", "Other credential error", e)
-                    }
-                    catch (e: Exception) {
-                            // Any other unexpected exception
-                            Log.e("CredExp", "Unexpected error", e)
-                    }
                 }
+
 
             }
 
