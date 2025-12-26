@@ -67,7 +67,8 @@ import kotlinx.coroutines.launch
 fun LoginScreen(
     modifier: Modifier = Modifier.padding(horizontal = 20.dp),
     vm: OnboardingViewModel= hiltViewModel(),
-    onPasswordLogin : () -> Unit
+    onPasswordLogin : () -> Unit,
+    onSignUpClick : () -> Unit
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -218,8 +219,6 @@ fun LoginScreen(
                         }
                     }
                 }
-
-
             }
 
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
@@ -231,7 +230,7 @@ fun LoginScreen(
                     fontSize = 13.sp,
                 )
                 TextButton(onClick = {
-
+                    onSignUpClick()
                 },
                     contentPadding = PaddingValues(0.dp),
                 ) {
@@ -340,5 +339,5 @@ fun TextBanner(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 private fun LoginScreenPreview() {
-    LoginScreen(){}
+    LoginScreen(onPasswordLogin = {}, onSignUpClick = {})
 }

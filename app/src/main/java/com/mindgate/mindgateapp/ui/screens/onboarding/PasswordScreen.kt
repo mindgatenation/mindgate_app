@@ -90,7 +90,7 @@ fun LoginPasswordScreen(
             )
 
             // --- Email Input ---
-            InputLabel(text = "Username/Email")
+            InputLabel(text = "Username/Email",accentColor)
             CustomInputField(
                 value = email,
                 onValueChange = { email = it },
@@ -100,7 +100,7 @@ fun LoginPasswordScreen(
             Spacer(modifier = Modifier.height(25.dp))
 
             // --- Password Input ---
-            InputLabel(text = "Password")
+            InputLabel(text = "Password", color = accentColor)
             CustomInputField(
                 value = password,
                 onValueChange = { password = it },
@@ -156,11 +156,11 @@ fun LoginPasswordScreen(
 // --- Helper Composables ---
 
 @Composable
-fun InputLabel(text: String) {
+fun InputLabel(text: String,color: Color) {
     Text(
         text = text,
         fontFamily = reg_font, // Using your font
-        color = accentColor, // Use your greenColor
+        color = color, // Use your greenColor
         fontSize = 16.sp,
         modifier = Modifier.padding(bottom = 10.dp)
     )

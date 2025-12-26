@@ -13,6 +13,7 @@ import androidx.navigation.navigation
 import com.mindgate.mindgateapp.RootRoutes
 import com.mindgate.mindgateapp.ui.screens.onboarding.LoginPasswordScreen
 import com.mindgate.mindgateapp.ui.screens.onboarding.LoginScreen
+import com.mindgate.mindgateapp.ui.screens.onboarding.SignupScreen
 
 fun NavGraphBuilder.onboardNavGraph(
     navController: NavHostController,
@@ -25,9 +26,11 @@ fun NavGraphBuilder.onboardNavGraph(
     ) {
 
         composable(OnboardScreens.LaunchScreen.route) {
-            LoginScreen(modifier = modifier){
+            LoginScreen(modifier = modifier, onPasswordLogin = {
                 navController.navigate(OnboardScreens.PasswordScreen.route)
-            }
+            }, onSignUpClick = {
+                navController.navigate(OnboardScreens.SignupScreen.route)
+            })
         }
 
         composable(OnboardScreens.PasswordScreen.route) {
@@ -43,10 +46,15 @@ fun NavGraphBuilder.onboardNavGraph(
                 }
             )
         }
+
+        composable (OnboardScreens.SignupScreen.route){
+            SignupScreen()
+        }
     }
 }
 
 sealed class OnboardScreens(val route: String){
     object LaunchScreen: OnboardScreens("launch_screen")
     object PasswordScreen : OnboardScreens(route = "password_screen")
+    object SignupScreen : OnboardScreens(route = "signup_screen")
 }
