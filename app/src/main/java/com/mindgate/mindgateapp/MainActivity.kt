@@ -9,10 +9,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.mindgate.mindgateapp.ui.components.MindgateBottomNavigation
+import com.mindgate.mindgateapp.ui.navigation.MainScreens
 import com.mindgate.mindgateapp.ui.navigation.mainNavGraph
 import com.mindgate.mindgateapp.ui.navigation.onboardNavGraph
 import com.mindgate.mindgateapp.ui.screens.onboarding.LoginScreen
@@ -25,16 +32,28 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val navController = rememberNavController()
+            val startDest by remember { mutableStateOf(RootRoutes.MAIN) }
+            var bottomSelection by remember { mutableStateOf(MainScreens.Home.route) }
             MindgateTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val navController = rememberNavController()
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    bottomBar = {
+                        if (startDest==RootRoutes.MAIN){
+                            MindgateBottomNavigation(bottomSelection, {
+                                bottomSelection = it
+                                navController.navigate(it)
+                            }, modifier = Modifier.padding(bottom = 10.dp))
+                        }
+                    }
+                ) { innerPadding ->
 
                     NavHost(
                         navController = navController,
-                        startDestination = RootRoutes.ONBOARD,
+                        startDestination = startDest,
                     ) {
                         onboardNavGraph(navController,Modifier.padding(innerPadding))
-                        mainNavGraph(navController)
+                        mainNavGraph(modifier = Modifier.padding(innerPadding))
                     }
                 }
             }
