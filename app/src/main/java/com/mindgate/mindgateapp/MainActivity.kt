@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-            val startDest by remember { mutableStateOf(RootRoutes.MAIN) }
+            val startDest by remember { mutableStateOf(RootRoutes.ONBOARD) }
             var bottomSelection by remember { mutableStateOf(MainScreens.Home.route) }
             MindgateTheme {
                 Scaffold(

@@ -179,50 +179,7 @@ fun SignupScreen(
                             .clip(RoundedCornerShape(12.dp))
                             .background(inputBgColor)
                             .clickable {
-                                val googleIdOption = GetGoogleIdOption.Builder()
-                                    .setFilterByAuthorizedAccounts(false)
-                                    .setAutoSelectEnabled(false)
-                                    .setServerClientId(BuildConfig.WEB_CLIENT_ID)
-                                    .build()
-
-                                val request = GetCredentialRequest.Builder()
-                                    .addCredentialOption(googleIdOption)
-                                    .build()
-
-                                coroutineScope.launch {
-                                    runCatching {
-                                        credentialManager.getCredential(
-                                            context = context,
-                                            request = request
-                                        )
-                                    }.onSuccess { result ->
-                                        val credential = result.credential
-
-                                        if (
-                                            credential is CustomCredential &&
-                                            credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
-                                        ) {
-                                            val googleCred =
-                                                GoogleIdTokenCredential.createFrom(credential.data)
-                                            vm.signInWithGoogle(googleCred.idToken)
-                                        }
-                                    }.onFailure { throwable ->
-                                        when (throwable) {
-                                            is NoCredentialException -> {
-                                                Log.d("CredExp", "No credential available (expected)")
-                                                Toast.makeText(context,"No credential available. Please login with Password", Toast.LENGTH_SHORT).show()
-                                            }
-
-                                            is GetCredentialCancellationException -> {
-                                                Log.d("CredExp", "User cancelled")
-                                            }
-
-                                            else -> {
-                                                Log.e("CredExp", "Unexpected error", throwable)
-                                            }
-                                        }
-                                    }
-                                }
+                                vm.signInWithGoogle(context)
                                 onGoogleConnect()
                             }
                             .border(1.dp, Color.LightGray.copy(0.5f), RoundedCornerShape(12.dp)),

@@ -71,8 +71,6 @@ fun LoginScreen(
     onSignUpClick : () -> Unit
 ) {
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-    val credentialManager = CredentialManager.create(context)
 
     Box(
         modifier = Modifier
@@ -175,50 +173,9 @@ fun LoginScreen(
                     .align(Alignment.CenterHorizontally)
                     .padding(vertical = 5.dp, horizontal = 5.dp)
             ) {
-                val googleIdOption = GetGoogleIdOption.Builder()
-                    .setFilterByAuthorizedAccounts(false)
-                    .setAutoSelectEnabled(false)
-                    .setServerClientId(BuildConfig.WEB_CLIENT_ID)
-                    .build()
 
-                val request = GetCredentialRequest.Builder()
-                    .addCredentialOption(googleIdOption)
-                    .build()
+                vm.signInWithGoogle(context)
 
-                coroutineScope.launch {
-                    runCatching {
-                        credentialManager.getCredential(
-                            context = context,
-                            request = request
-                        )
-                    }.onSuccess { result ->
-                        val credential = result.credential
-
-                        if (
-                            credential is CustomCredential &&
-                            credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
-                        ) {
-                            val googleCred =
-                                GoogleIdTokenCredential.createFrom(credential.data)
-                            vm.signInWithGoogle(googleCred.idToken)
-                        }
-                    }.onFailure { throwable ->
-                        when (throwable) {
-                            is NoCredentialException -> {
-                                Log.d("CredExp", "No credential available (expected)")
-                                Toast.makeText(context,"No credential available. Please login with Password", Toast.LENGTH_SHORT).show()
-                            }
-
-                            is GetCredentialCancellationException -> {
-                                Log.d("CredExp", "User cancelled")
-                            }
-
-                            else -> {
-                                Log.e("CredExp", "Unexpected error", throwable)
-                            }
-                        }
-                    }
-                }
             }
 
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
