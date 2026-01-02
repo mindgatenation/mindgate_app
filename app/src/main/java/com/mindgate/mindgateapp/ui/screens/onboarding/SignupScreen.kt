@@ -62,7 +62,6 @@ fun SignupScreen(
 ) {
     // --- State Variables ---
     val context = LocalContext.current
-    val credentialManager = CredentialManager.create(context)
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     var username by remember { mutableStateOf("") }
@@ -284,9 +283,6 @@ fun SignupScreen(
                         .align(Alignment.CenterHorizontally)
                 ) {
                     onRegister()
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar("Registration Clicked!")
-                    }
                 }
                 Spacer(modifier = Modifier.height(50.dp))
             }

@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,6 +50,8 @@ fun AIChatScreen(
     val chatHistory by vm.history.collectAsState()
     var inputText by remember { mutableStateOf("") }
 
+    val isKeyboardOpen = WindowInsets.ime.getBottom(LocalDensity.current) > 0
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -72,13 +75,15 @@ fun AIChatScreen(
     ) {
         Scaffold(
             containerColor = Color.White,
+            contentWindowInsets = WindowInsets.statusBars,
             topBar = {
                 CustomTopBar(
                     title = currentChat?.chat_name ?: "Chat With Us",
-                    onMenuClick = { scope.launch { drawerState.open() } }
+                    onMenuClick = { scope.launch { drawerState.open() } },
+                    modifier
                 )
             },
-            modifier = modifier,
+//            modifier = modifier,
             bottomBar = {
                 // Stack Input Field on top of Bottom Nav
                 Column(
@@ -98,6 +103,10 @@ fun AIChatScreen(
                             }
                         }
                     )
+                    if (!isKeyboardOpen) {
+                        // Adjust this height (80.dp) to match your actual Bottom Nav height
+                        Spacer(modifier = Modifier.height(90.dp))
+                    }
                 }
             }
         ) { paddingValues ->
@@ -121,11 +130,12 @@ fun AIChatScreen(
 // --- Sub-Composables ---
 
 @Composable
-fun CustomTopBar(title: String, onMenuClick: () -> Unit) {
+fun CustomTopBar(title: String, onMenuClick: () -> Unit,modifier: Modifier) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 20.dp),
+            .padding(horizontal = 24.dp, vertical = 20.dp)
+            ,
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Drawer Button
@@ -304,13 +314,15 @@ fun InputArea(
             .height(60.dp)
             .clip(RoundedCornerShape(50.dp))
             .background(greenColor.copy(alpha = 0.5f))
-            .padding(start = 20.dp, end = 15.dp),
+            .padding(start = 20.dp, end = 15.dp)
+                ,
         verticalAlignment = Alignment.CenterVertically
     ) {
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f)
+            ,
             textStyle = TextStyle(fontSize = 16.sp, color = accentColor),
             decorationBox = { innerTextField ->
                 if (value.isEmpty()) {

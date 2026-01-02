@@ -17,7 +17,8 @@ import com.mindgate.mindgateapp.ui.screens.onboarding.SignupScreen
 
 fun NavGraphBuilder.onboardNavGraph(
     navController: NavHostController,
-    modifier: Modifier
+    modifier: Modifier,
+    onRegisterClick : () -> Unit,
 ) {
 
     navigation(
@@ -48,7 +49,9 @@ fun NavGraphBuilder.onboardNavGraph(
         }
 
         composable (OnboardScreens.SignupScreen.route){
-            SignupScreen()
+            SignupScreen(onRegister = {
+                onRegisterClick()
+            })
         }
     }
 }
