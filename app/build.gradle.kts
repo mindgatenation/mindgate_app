@@ -97,6 +97,7 @@ dependencies {
     implementation("androidx.credentials:credentials:1.6.0-rc01")
     implementation("androidx.credentials:credentials-play-services-auth:1.6.0-rc01")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
-
+//    async image
+    implementation("io.coil-kt:coil-compose:2.7.0")
 
 }

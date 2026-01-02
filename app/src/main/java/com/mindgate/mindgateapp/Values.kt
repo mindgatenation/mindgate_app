@@ -10,8 +10,6 @@ val baseColor = Color(0xFFF8FDF9)
 val greenColor = Color(0xFFBFF5DB)
 val accentColor = Color(0xFF006600)
 val InputGrayColor = Color(0xFFF3F4F6) // Light gray for text fields
-val DarkGreenColor = Color(0xFF006400) // Adjust to match your 'greenColor'
-
 
 val reg_font = FontFamily(Font(R.font.poppins_regular))
 val med_font = FontFamily(Font(R.font.poppins_medium))

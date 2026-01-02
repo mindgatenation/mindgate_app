@@ -33,7 +33,7 @@ fun NavGraphBuilder.mainNavGraph(
             AIChatScreen(modifier)
         }
         composable(MainScreens.Professional.route) {
-            ProfessionalScreen()
+            ProfessionalScreen(modifier)
         }
         composable(MainScreens.Community.route) {
             CommunityScreen()
