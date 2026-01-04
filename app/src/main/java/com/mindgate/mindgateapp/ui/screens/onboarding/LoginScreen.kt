@@ -27,6 +27,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,17 +63,40 @@ import com.mindgate.mindgateapp.mindgate_logo
 import com.mindgate.mindgateapp.reg_font
 import com.mindgate.mindgateapp.semibold_font
 import com.mindgate.mindgateapp.ui.components.ActionButton
+import com.mindgate.mindgateapp.viewmodels.LoginState
 import com.mindgate.mindgateapp.viewmodels.OnboardingViewModel
 import kotlinx.coroutines.launch
+
+
+
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier.padding(horizontal = 20.dp),
     vm: OnboardingViewModel= hiltViewModel(),
+    onGoogleSignInReturn : (Boolean) -> Unit,
     onPasswordLogin : () -> Unit,
     onSignUpClick : () -> Unit
 ) {
     val context = LocalContext.current
+
+    val loginState by vm.loginState.collectAsState()
+
+    // 2. React to state changes
+    LaunchedEffect(loginState) {
+        when (loginState) {
+            is LoginState.Success -> {
+                Log.d("LoginScreen", "Google Sign In Successful")
+                onGoogleSignInReturn(true)
+            }
+            is LoginState.Error -> {
+                Log.d("LoginScreen", "Google Sign In Failed")
+                Toast.makeText(context, "Login Failed", Toast.LENGTH_SHORT).show()
+                onGoogleSignInReturn(false)
+            }
+            else -> { /* Do nothing for Idle/Loading */ }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -173,9 +199,7 @@ fun LoginScreen(
                     .align(Alignment.CenterHorizontally)
                     .padding(vertical = 5.dp, horizontal = 5.dp)
             ) {
-
                 vm.signInWithGoogle(context)
-
             }
 
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
@@ -296,5 +320,5 @@ fun TextBanner(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 private fun LoginScreenPreview() {
-    LoginScreen(onPasswordLogin = {}, onSignUpClick = {})
+//    LoginScreen(onPasswordLogin = {}, onSignUpClick = {})
 }

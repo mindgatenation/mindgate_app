@@ -27,7 +27,13 @@ fun NavGraphBuilder.onboardNavGraph(
     ) {
 
         composable(OnboardScreens.LaunchScreen.route) {
-            LoginScreen(modifier = modifier, onPasswordLogin = {
+            LoginScreen(modifier = modifier,
+                onGoogleSignInReturn = {
+                    if (it){
+                        navController.navigate(RootRoutes.MAIN)
+                    }
+                },
+                onPasswordLogin = {
                 navController.navigate(OnboardScreens.PasswordScreen.route)
             }, onSignUpClick = {
                 navController.navigate(OnboardScreens.SignupScreen.route)

@@ -19,6 +19,12 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+sealed class LoginState {
+    object Idle : LoginState()
+    object Loading : LoginState()
+    object Success : LoginState()
+    data class Error(val message: String) : LoginState()
+}
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
@@ -29,8 +35,12 @@ class OnboardingViewModel @Inject constructor(
     val userEmail = _userEmail.asStateFlow()
     val request = getCredentialRequest
 
-    fun signInWithGoogle(context: Context) {
+    private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
+    val loginState = _loginState.asStateFlow()
+
+    fun signInWithGoogle(context: Context) : Boolean {
         val credentialManager = CredentialManager.create(context)
+        var success = false
         viewModelScope.launch {
             runCatching {
                 credentialManager.getCredential(
@@ -50,8 +60,10 @@ class OnboardingViewModel @Inject constructor(
                     if (result.isSuccess) {
                         Toast.makeText(context, "Credentials Found", Toast.LENGTH_SHORT).show()
                         _userEmail.value = authRepository.currentUser()?.email
+                        _loginState.value = LoginState.Success
                     } else {
                         Toast.makeText(context, "No Credentials Found", Toast.LENGTH_SHORT).show()
+                        _loginState.value = LoginState.Error(result.exceptionOrNull()?.message ?: "Unknown Error")
                     }
                 }
             }.onFailure { throwable ->
@@ -76,6 +88,7 @@ class OnboardingViewModel @Inject constructor(
             }
 
         }
+        return success
     }
 
     fun signOut() = viewModelScope.launch {
