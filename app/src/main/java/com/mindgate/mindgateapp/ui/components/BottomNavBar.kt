@@ -23,12 +23,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mindgate.mindgateapp.accentColor
+import com.mindgate.mindgateapp.greenColor
 import com.mindgate.mindgateapp.semibold_font
 import com.mindgate.mindgateapp.ui.navigation.MainScreens
 
 // --- Colors based on your image ---
-val NavContainerColor = Color(0xFFC1F0DC) // Light Mint Green
-val NavItemColor = Color(0xFF005500)      // Dark Green (Icons/Text)
+val NavContainerColor = greenColor // Light Mint Green
+val NavItemColor = accentColor      // Dark Green (Icons/Text)
 val NavSelectedBgColor = Color.White      // White pill background
 
 // --- Data Class for Navigation Items ---
