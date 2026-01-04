@@ -6,5 +6,7 @@ data class Professional(
     val type: String,
     val description: String,
     val imgUrl : String,
-    val rating : Int
+    val rating : Double,
+    val price: Int,
+    val tags : List<String>
 )

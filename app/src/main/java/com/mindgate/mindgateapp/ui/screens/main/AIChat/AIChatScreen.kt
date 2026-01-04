@@ -1,4 +1,4 @@
-package com.mindgate.mindgateapp.ui.screens.main
+package com.mindgate.mindgateapp.ui.screens.main.AIChat
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
@@ -33,8 +34,6 @@ import com.mindgate.mindgateapp.data.dao.AiChat
 import com.mindgate.mindgateapp.greenColor
 import com.mindgate.mindgateapp.med_font
 import com.mindgate.mindgateapp.reg_font
-import com.mindgate.mindgateapp.semibold_font
-import com.mindgate.mindgateapp.ui.components.MindgateBottomNavigation
 import com.mindgate.mindgateapp.viewmodels.AIChatViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -427,7 +426,7 @@ fun BasicTextField(
     textStyle: TextStyle = TextStyle.Default,
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit
 ) {
-    androidx.compose.foundation.text.BasicTextField(
+    BasicTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier,

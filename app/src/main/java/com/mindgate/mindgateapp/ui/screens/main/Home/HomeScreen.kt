@@ -1,4 +1,4 @@
-package com.mindgate.mindgateapp.ui.screens.main
+package com.mindgate.mindgateapp.ui.screens.main.Home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,15 +12,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.mindgate.mindgateapp.accentColor
 import com.mindgate.mindgateapp.med_font
-import com.mindgate.mindgateapp.ui.components.BottomNavItem
 
 @Composable
-fun CommunityScreen(modifier: Modifier = Modifier) {
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color.White)){
+fun HomeScreen(modifier: Modifier = Modifier) {
+    Box(modifier = Modifier.fillMaxSize().background(Color.White)){
         Text(
-            text = "Community Screen",
+            text = "Homescreen",
             color = accentColor,
             fontFamily = med_font,
             fontSize = 15.sp,
@@ -31,6 +28,6 @@ fun CommunityScreen(modifier: Modifier = Modifier) {
 
 @Preview
 @Composable
-private fun CommunityScreenPrev() {
-    CommunityScreen()
+private fun MainScreenPrev() {
+    HomeScreen()
 }

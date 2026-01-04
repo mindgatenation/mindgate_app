@@ -1,4 +1,4 @@
-package com.mindgate.mindgateapp.ui.screens.main
+package com.mindgate.mindgateapp.ui.screens.main.Community
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -14,10 +14,12 @@ import com.mindgate.mindgateapp.accentColor
 import com.mindgate.mindgateapp.med_font
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
-    Box(modifier = Modifier.fillMaxSize().background(Color.White)){
+fun CommunityScreen(modifier: Modifier = Modifier) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Color.White)){
         Text(
-            text = "Homescreen",
+            text = "Community Screen",
             color = accentColor,
             fontFamily = med_font,
             fontSize = 15.sp,
@@ -28,6 +30,6 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 
 @Preview
 @Composable
-private fun MainScreenPrev() {
-    HomeScreen()
+private fun CommunityScreenPrev() {
+    CommunityScreen()
 }

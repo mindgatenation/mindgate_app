@@ -1,8 +1,8 @@
-package com.mindgate.mindgateapp.ui.screens.main
+package com.mindgate.mindgateapp.ui.screens.main.Professionl
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -20,19 +20,43 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.mindgate.mindgateapp.accentColor
 import com.mindgate.mindgateapp.data.dao.Professional
 import com.mindgate.mindgateapp.med_font
 import com.mindgate.mindgateapp.reg_font
 import com.mindgate.mindgateapp.semibold_font
 import com.mindgate.mindgateapp.ui.components.ProfessionalCard
+import com.mindgate.mindgateapp.ui.components.ProfessionalDetailsContent
+import com.mindgate.mindgateapp.viewmodels.ProfessionalViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfessionalScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onBookClick: () -> Unit = {},
+    vm : ProfessionalViewModel
 ) {
     var searchText by remember { mutableStateOf("") }
     var selectedCategoryIndex by remember { mutableIntStateOf(0) }
+
+    // --- Bottom Sheet State ---
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var showBottomSheet by remember { mutableStateOf(false) }
+    // Store the clicked professional so the sheet knows who to display
+    var selectedProfessional by remember { mutableStateOf<Professional?>(null) }
+
+    // Dummy Data
+    val sampleProfessional = Professional(
+        id = "1",
+        name = "Sarah Black",
+        type = "Physiologists",
+        description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+        imgUrl = "https://annemariesegal.com/wp-content/uploads/2017/04/adobestock_86346713-cropped-young-woman-in-suit.jpg?w=1680",
+        rating = 4.0,
+        price = 499,
+        tags = listOf("Anxiety", "Stress", "Relationship")
+    )
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -45,9 +69,7 @@ fun ProfessionalScreen(
                     fontFamily = semibold_font,
                     color = accentColor,
                 )
-
                 Spacer(modifier = Modifier.height(12.dp))
-
                 Text(
                     text = "Find the perfect match for your need,\nin the way you feel comfortable.",
                     fontSize = 15.sp,
@@ -102,17 +124,36 @@ fun ProfessionalScreen(
                         onClick = { selectedCategoryIndex = 1 }
                     )
                 }
-//                LazyColumn() { }
+
                 Spacer(modifier = Modifier.height(20.dp))
+
+                // --- Professional Card with Click ---
                 ProfessionalCard(
-                    professional = Professional(
-                        id = "1",
-                        name = "John Doe",
-                        type = "Psychologist",
-                        description = "Experienced psychologist with a focus on mental health.",
-                        imgUrl = "https://annemariesegal.com/wp-content/uploads/2017/04/adobestock_86346713-cropped-young-woman-in-suit.jpg?w=1680",
-                        rating = 4
-                    )
+                    professional = sampleProfessional,
+                    onClick = {
+                        selectedProfessional = sampleProfessional
+                        showBottomSheet = true
+                    }
+                )
+            }
+        }
+
+        // --- The Bottom Sheet Logic ---
+        if (showBottomSheet && selectedProfessional != null) {
+            ModalBottomSheet(
+                onDismissRequest = { showBottomSheet = false },
+                sheetState = sheetState,
+                containerColor = Color.White, // Ensure sheet is white
+                shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
+            ) {
+                ProfessionalDetailsContent(
+                    professional = selectedProfessional!!,
+                    onBookClick = {
+                        Log.d("ProfessionalScreen", "Book Clicked")
+                        vm.setSelectedProfessional(selectedProfessional!!)
+                        onBookClick()
+                        showBottomSheet = false
+                    }
                 )
             }
         }
@@ -261,5 +302,5 @@ fun FilterSortBar() {
 @Preview
 @Composable
 private fun ProfessionalScreenPrev() {
-    ProfessionalScreen()
+//    ProfessionalScreen()
 }

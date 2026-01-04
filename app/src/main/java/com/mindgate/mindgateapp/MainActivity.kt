@@ -71,7 +71,7 @@ class MainActivity : ComponentActivity() {
                             bottomSelection = MainScreens.Home.route
                             startDest = RootRoutes.MAIN
                         }
-                        mainNavGraph(modifier = Modifier.padding(innerPadding))
+                        mainNavGraph(navController,modifier = Modifier.padding(innerPadding))
                     }
                 }
             }

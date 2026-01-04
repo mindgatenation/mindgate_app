@@ -9,7 +9,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.East
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -83,7 +86,7 @@ fun ProfessionalCard(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = "${professional.rating}.0",
+                        text = "${professional.rating}",
                         color = accentColor,
                         fontSize = 12.sp,
                         fontFamily = semibold_font
@@ -170,17 +173,151 @@ fun ProfessionalCard(
     }
 }
 
-@Preview
+@Composable
+fun ProfessionalDetailsContent(
+    professional: Professional,
+    onBookClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp)
+            .padding(bottom = 30.dp), // Padding for bottom safe area
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // --- Profile Image ---
+        AsyncImage(
+            model = professional.imgUrl,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(100.dp)
+                .clip(CircleShape)
+                .border(1.dp, Color.Gray.copy(0.2f), CircleShape)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // --- Name & Type ---
+        Text(
+            text = professional.name,
+            fontFamily = semibold_font,
+            fontSize = 22.sp,
+            color = accentColor
+        )
+        Text(
+            text = professional.type,
+            fontFamily = reg_font,
+            fontSize = 12.sp,
+            color = accentColor.copy(0.7f)
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // --- Rating ---
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = "${professional.rating}/5",
+                fontFamily = semibold_font,
+                fontSize = 14.sp,
+                color = accentColor
+            )
+            Icon(
+                imageVector = Icons.Default.Star,
+                contentDescription = null,
+                tint = accentColor,
+                modifier = Modifier.size(14.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // --- Tags (Pills) ---
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            professional.tags.forEach { tag ->
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(50))
+                        .background(greenColor) // Light green bg
+                        .padding(horizontal = 16.dp, vertical = 6.dp)
+                ) {
+                    Text(
+                        text = tag,
+                        color = accentColor,
+                        fontFamily = med_font,
+                        fontSize = 11.sp
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(25.dp))
+
+        // --- About Section ---
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = "About",
+                fontFamily = semibold_font,
+                fontSize = 12.sp,
+                color = Color.Black.copy(0.5f)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = professional.description, // Or use your lorem ipsum text
+                fontFamily = med_font,
+                fontSize = 13.sp,
+                color = Color.Black.copy(0.7f),
+                lineHeight = 20.sp
+            )
+        }
+
+        Spacer(modifier = Modifier.height(25.dp))
+
+        // --- Price ---
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = "₹${professional.price}/Session",
+                fontFamily = semibold_font,
+                fontSize = 15.sp,
+                color = Color.Black.copy(0.7f)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        ActionButton(
+            text = "Book Session",
+            placeholder = {
+                Icon(
+                    Icons.Default.East,
+                    contentDescription = null,
+                    tint = greenColor,
+                    modifier = Modifier.size(20.dp)
+                )
+            },
+            plcHldrRight = true,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(vertical = 7.dp, horizontal = 10.dp)
+        ) {onBookClick() }
+    }
+}
+
+@Preview( showBackground = true)
 @Composable
 private fun PrevCardPrev() {
-    ProfessionalCard(
+    ProfessionalDetailsContent (
         Professional(
             id = "1",
             name = "John Doe",
             type = "Psychologist",
             description = "Experienced psychologist with a focus on mental health.",
             imgUrl = "",
-            rating = 4
-        )
+            rating = 4.0,
+            price = 100,
+            tags = listOf("google")
+        ),
+        {}
     )
 }
