@@ -42,14 +42,6 @@ fun HomeScreen(
         }
     }
 
-    val context = LocalContext.current as MainActivity
-    LaunchedEffect(Unit) {
-        val currUserEmail = vm.getCurrUser()?.email
-        currUserEmail?.let {
-            Log.d("HomeScreen", "HomeScreen: $currUserEmail")
-            context.initZegoInviteService(BuildConfig.ZEGOCLOUD_APP_ID.toLong(), BuildConfig.ZEGOCLOUD_APP_SIGN, currUserEmail, currUserEmail)
-        }
-    }
     val targetUserId by remember { mutableStateOf("") }
     val currSessions = vm.currSessions.collectAsState().value
     Box(modifier = modifier.fillMaxSize().background(Color.White)){
@@ -74,15 +66,6 @@ fun HomeScreen(
             modifier = Modifier.align(Alignment.Center)
         )
     }
-
-//    Column(modifier = modifier.fillMaxSize().background(Color.White)) {
-//        UpcomingSessionItem(
-//        name = "lov",
-//        type = "profesional",
-//        rating =  3.9,
-//        imgUrl = ""
-//    )
-//    }
 }
 
 @Preview

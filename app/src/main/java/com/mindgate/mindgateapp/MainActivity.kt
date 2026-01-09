@@ -133,36 +133,36 @@ class MainActivity : FragmentActivity() {
         permissionHandling(this)
     }
 
-    fun initZegoInviteService(appID: Long, appSign: String, userID: String, userName: String) {
-        val callInvitationConfig = ZegoUIKitPrebuiltCallInvitationConfig()
-        callInvitationConfig.translationText = ZegoTranslationText(ZegoUIKitLanguage.ENGLISH)
-        callInvitationConfig.provider = ZegoUIKitPrebuiltCallConfigProvider {invitationData : ZegoCallInvitationData ->
-            generateDefaultConfig(
-                invitationData
-            )
-        }
-        ZegoUIKitPrebuiltCallService.events.errorEventsListener =
-            ErrorEventsListener { errorCode: Int, message: String ->
-                Timber.d("onError() called with: errorCode = [$errorCode], message = [$message]")
-            }
-        ZegoUIKitPrebuiltCallService.events.invitationEvents.pluginConnectListener =
-            SignalPluginConnectListener { state: ZIMConnectionState, event: ZIMConnectionEvent, extendedData: JSONObject ->
-                Timber.d("onSignalPluginConnectionStateChanged() called with: state = [$state], event = [$event], extendedData = [$extendedData$]")
-            }
-        ZegoUIKitPrebuiltCallService.init(
-            application, appID, appSign, userID, userName, callInvitationConfig
-        )
-        ZegoUIKitPrebuiltCallService.enableFCMPush()
-
-        ZegoUIKitPrebuiltCallService.events.callEvents.callEndListener =
-            CallEndListener { callEndReason: ZegoCallEndReason?, jsonObject: String? ->
-
-                Log.d(
-                    "CallEndListener",
-                    "Call Ended with reason: $callEndReason and json: $jsonObject"
-                )
-            }
-    }
+//    fun initZegoInviteService(appID: Long, appSign: String, userID: String, userName: String) {
+//        val callInvitationConfig = ZegoUIKitPrebuiltCallInvitationConfig()
+//        callInvitationConfig.translationText = ZegoTranslationText(ZegoUIKitLanguage.ENGLISH)
+//        callInvitationConfig.provider = ZegoUIKitPrebuiltCallConfigProvider {invitationData : ZegoCallInvitationData ->
+//            generateDefaultConfig(
+//                invitationData
+//            )
+//        }
+//        ZegoUIKitPrebuiltCallService.events.errorEventsListener =
+//            ErrorEventsListener { errorCode: Int, message: String ->
+//                Timber.d("onError() called with: errorCode = [$errorCode], message = [$message]")
+//            }
+//        ZegoUIKitPrebuiltCallService.events.invitationEvents.pluginConnectListener =
+//            SignalPluginConnectListener { state: ZIMConnectionState, event: ZIMConnectionEvent, extendedData: JSONObject ->
+//                Timber.d("onSignalPluginConnectionStateChanged() called with: state = [$state], event = [$event], extendedData = [$extendedData$]")
+//            }
+//        ZegoUIKitPrebuiltCallService.init(
+//            application, appID, appSign, userID, userName, callInvitationConfig
+//        )
+//        ZegoUIKitPrebuiltCallService.enableFCMPush()
+//
+//        ZegoUIKitPrebuiltCallService.events.callEvents.callEndListener =
+//            CallEndListener { callEndReason: ZegoCallEndReason?, jsonObject: String? ->
+//
+//                Log.d(
+//                    "CallEndListener",
+//                    "Call Ended with reason: $callEndReason and json: $jsonObject"
+//                )
+//            }
+//    }
 
     override fun onDestroy() {
         super.onDestroy()

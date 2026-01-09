@@ -13,7 +13,9 @@ import androidx.credentials.exceptions.NoCredentialException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.mindgate.mindgateapp.BuildConfig
 import com.mindgate.mindgateapp.data.repo.AuthRepository
+import com.mindgate.mindgateapp.di.ZegoCallManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +31,8 @@ sealed class LoginState {
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val getCredentialRequest : GetCredentialRequest
+    private val getCredentialRequest : GetCredentialRequest,
+    private val zegoCallManager: ZegoCallManager
 ) : ViewModel() {
     private val _userEmail : MutableStateFlow<String?> = MutableStateFlow(null)
     val userEmail = _userEmail.asStateFlow()
@@ -61,6 +64,12 @@ class OnboardingViewModel @Inject constructor(
                         Toast.makeText(context, "Credentials Found", Toast.LENGTH_SHORT).show()
                         _userEmail.value = authRepository.currentUser()?.email
                         _loginState.value = LoginState.Success
+                        zegoCallManager.initZegoInviteService(
+                            appID = BuildConfig.ZEGOCLOUD_APP_ID.toLong(),
+                            appSign = BuildConfig.ZEGOCLOUD_APP_SIGN,
+                            userID = authRepository.currentUser()?.email!!,
+                            userName = authRepository.currentUser()?.email!!
+                        )
                     } else {
                         Toast.makeText(context, "No Credentials Found", Toast.LENGTH_SHORT).show()
                         _loginState.value = LoginState.Error(result.exceptionOrNull()?.message ?: "Unknown Error")
