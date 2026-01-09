@@ -37,6 +37,12 @@ android {
 
         val WEB_CLIENT_ID = getLocalProperty("WEB_CLIENT_ID", rootProject.projectDir)
         buildConfigField("String","WEB_CLIENT_ID", "\"$WEB_CLIENT_ID\"")
+
+        val ZEGOCLOUD_APP_ID = getLocalProperty("ZEGOCLOUD_APP_ID", rootProject.projectDir)
+        buildConfigField("String","ZEGOCLOUD_APP_ID", "\"$ZEGOCLOUD_APP_ID\"")
+
+        val ZEGOCLOUD_APP_SIGN = getLocalProperty("ZEGOCLOUD_APP_SIGN", rootProject.projectDir)
+        buildConfigField("String","ZEGOCLOUD_APP_SIGN", "\"$ZEGOCLOUD_APP_SIGN\"")
     }
 
     buildTypes {
@@ -81,6 +87,7 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    implementation("androidx.appcompat:appcompat:1.6.1")
 
 //    material icons
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
@@ -100,4 +107,9 @@ dependencies {
 //    async image
     implementation("io.coil-kt:coil-compose:2.7.0")
 
+//    zegocloud
+    implementation("com.github.ZEGOCLOUD:zego_uikit_prebuilt_call_android:+")
+    implementation("com.guolindev.permissionx:permissionx:1.8.1")
+
+    implementation(libs.material)
 }

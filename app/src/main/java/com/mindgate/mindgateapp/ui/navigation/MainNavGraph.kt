@@ -78,7 +78,7 @@ fun NavGraphBuilder.mainNavGraph(
         }
     ) {
         composable(MainScreens.Home.route) {
-            HomeScreen()
+            HomeScreen(modifier )
         }
 
         composable(MainScreens.AIScreen.route) {
