@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
@@ -13,7 +14,9 @@ import androidx.credentials.exceptions.NoCredentialException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.mindgate.mindgateapp.BuildConfig
 import com.mindgate.mindgateapp.data.repo.AuthRepository
+import com.mindgate.mindgateapp.di.ZegoCallManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,11 +32,13 @@ sealed class LoginState {
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val getCredentialRequest : GetCredentialRequest
+    private val getCredentialRequest : GetCredentialRequest,
 ) : ViewModel() {
     private val _userEmail : MutableStateFlow<String?> = MutableStateFlow(null)
     val userEmail = _userEmail.asStateFlow()
     val request = getCredentialRequest
+
+    val currentUser = authRepository.currentUser
 
     private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
     val loginState = _loginState.asStateFlow()
@@ -59,7 +64,7 @@ class OnboardingViewModel @Inject constructor(
                     val result = authRepository.signInWithGoogle(googleCred.idToken)
                     if (result.isSuccess) {
                         Toast.makeText(context, "Credentials Found", Toast.LENGTH_SHORT).show()
-                        _userEmail.value = authRepository.currentUser()?.email
+                        _userEmail.value = authRepository.currentUser.value?.email
                         _loginState.value = LoginState.Success
                     } else {
                         Toast.makeText(context, "No Credentials Found", Toast.LENGTH_SHORT).show()
@@ -91,9 +96,4 @@ class OnboardingViewModel @Inject constructor(
         return success
     }
 
-    fun signOut() = viewModelScope.launch {
-        authRepository.signOut()
-    }
-
-    fun currentUser() = authRepository.currentUser()
 }

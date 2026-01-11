@@ -19,6 +19,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.navigation.compose.navigation
+import com.mindgate.mindgateapp.di.ZegoCallManager
 
 
 fun NavGraphBuilder.mainNavGraph(
@@ -78,7 +79,7 @@ fun NavGraphBuilder.mainNavGraph(
         }
     ) {
         composable(MainScreens.Home.route) {
-            HomeScreen()
+            HomeScreen(modifier)
         }
 
         composable(MainScreens.AIScreen.route) {
