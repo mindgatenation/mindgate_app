@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
@@ -32,11 +33,12 @@ sealed class LoginState {
 class OnboardingViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val getCredentialRequest : GetCredentialRequest,
-    private val zegoCallManager: ZegoCallManager
 ) : ViewModel() {
     private val _userEmail : MutableStateFlow<String?> = MutableStateFlow(null)
     val userEmail = _userEmail.asStateFlow()
     val request = getCredentialRequest
+
+    val currentUser = authRepository.currentUser
 
     private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
     val loginState = _loginState.asStateFlow()
@@ -62,14 +64,8 @@ class OnboardingViewModel @Inject constructor(
                     val result = authRepository.signInWithGoogle(googleCred.idToken)
                     if (result.isSuccess) {
                         Toast.makeText(context, "Credentials Found", Toast.LENGTH_SHORT).show()
-                        _userEmail.value = authRepository.currentUser()?.email
+                        _userEmail.value = authRepository.currentUser.value?.email
                         _loginState.value = LoginState.Success
-                        zegoCallManager.initZegoInviteService(
-                            appID = BuildConfig.ZEGOCLOUD_APP_ID.toLong(),
-                            appSign = BuildConfig.ZEGOCLOUD_APP_SIGN,
-                            userID = authRepository.currentUser()?.email!!,
-                            userName = authRepository.currentUser()?.email!!
-                        )
                     } else {
                         Toast.makeText(context, "No Credentials Found", Toast.LENGTH_SHORT).show()
                         _loginState.value = LoginState.Error(result.exceptionOrNull()?.message ?: "Unknown Error")
@@ -100,9 +96,4 @@ class OnboardingViewModel @Inject constructor(
         return success
     }
 
-    fun signOut() = viewModelScope.launch {
-        authRepository.signOut()
-    }
-
-    fun currentUser() = authRepository.currentUser()
 }

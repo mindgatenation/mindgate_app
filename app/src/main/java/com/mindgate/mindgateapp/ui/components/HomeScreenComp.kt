@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,19 +48,20 @@ import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 
 @Composable
 fun UpcomingSessionCard(sessions: List<Sessions>, onCallConnect: (ZegoSendCallInvitationButton, String) -> Unit, modifier: Modifier = Modifier) {
-    Scaffold (modifier = Modifier.fillMaxWidth()){ innerPadding ->
-        LazyRow(modifier = Modifier.padding(innerPadding),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        LazyRow(modifier = modifier,
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(horizontal = 20.dp)
+            ) {
             items(sessions.size) { index ->
-                UpcomingSessionItem(name = "test$index",
+                UpcomingSessionItem(
+                    name = "test$index",
                     type = "profesional",
-                    rating =  3.9,
+                    rating = 3.9,
                     imgUrl = "",
                     session = sessions[index]
                 )
             }
         }
-    }
 }
 
 // --- Component: Professional Summary Card ---

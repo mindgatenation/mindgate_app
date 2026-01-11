@@ -19,6 +19,7 @@ fun NavGraphBuilder.onboardNavGraph(
     navController: NavHostController,
     modifier: Modifier,
     onRegisterClick : () -> Unit,
+    onSuccessLogin : () -> Unit
 ) {
 
     navigation(
@@ -30,7 +31,7 @@ fun NavGraphBuilder.onboardNavGraph(
             LoginScreen(modifier = modifier,
                 onGoogleSignInReturn = {
                     if (it){
-                        navController.navigate(RootRoutes.MAIN)
+                        onSuccessLogin()
                     }
                 },
                 onPasswordLogin = {
