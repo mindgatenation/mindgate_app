@@ -16,11 +16,9 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.delay
 import com.mindgate.mindgateapp.R
 import com.mindgate.mindgateapp.accentColor
@@ -79,7 +77,7 @@ fun LoadingScreen(
 
         // --- 2. Center Content ---
         Column(
-            modifier = Modifier.align(Alignment.Center),
+            modifier = Modifier.align(Alignment.Center).offset(y=-10.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -94,7 +92,7 @@ fun LoadingScreen(
                 targetState = loadingMessages[messageIndex],
                 transitionSpec = {
                     (fadeIn(animationSpec = tween(600)) + slideInVertically { it / 2 })
-                        .togetherWith(fadeOut(animationSpec = tween(600)) + slideOutVertically { -it / 2 })
+                        .togetherWith(fadeOut(animationSpec = tween(300)) )
                 },
                 label = "loading_text"
             ) { targetText ->
@@ -115,10 +113,10 @@ fun PulsingLogo() {
 
     // Animate Scale (Breathing effect)
     val scale by infiniteTransition.animateFloat(
-        initialValue = 0.85f,
+        initialValue = 0f,
         targetValue = 1.15f,
         animationSpec = infiniteRepeatable(
-            animation = tween(1200, easing = FastOutSlowInEasing),
+            animation = tween(1200, easing = EaseInOut),
             repeatMode = RepeatMode.Reverse
         ),
         label = "scale"
@@ -129,8 +127,8 @@ fun PulsingLogo() {
         initialValue = 0.5f,
         targetValue = 0f,
         animationSpec = infiniteRepeatable(
-            animation = tween(1200, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Restart
+            animation = tween(1200, easing = EaseInOut),
+            repeatMode = RepeatMode.Reverse
         ),
         label = "alpha"
     )
@@ -168,7 +166,7 @@ fun PulsingLogo() {
             Image(
                 painter = painterResource(id = R.drawable.mindgate_logo),
                 contentDescription = "Logo",
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.size(30.dp).fillMaxSize()
             )
         }
     }

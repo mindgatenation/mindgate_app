@@ -1,13 +1,8 @@
 package com.mindgate.mindgateapp.ui.navigation
 
-import android.app.Application
-import android.widget.Toast
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.mindgate.mindgateapp.RootRoutes

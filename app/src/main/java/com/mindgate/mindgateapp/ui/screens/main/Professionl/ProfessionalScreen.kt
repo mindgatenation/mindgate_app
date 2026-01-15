@@ -20,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.mindgate.mindgateapp.accentColor
 import com.mindgate.mindgateapp.data.dao.Professional
 import com.mindgate.mindgateapp.med_font

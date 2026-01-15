@@ -2,8 +2,6 @@ package com.mindgate.mindgateapp
 
 import android.Manifest
 import android.os.Bundle
-import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,56 +9,31 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navigation
-import com.mindgate.mindgateapp.di.ZegoCallManager
 import com.mindgate.mindgateapp.ui.components.MindgateBottomNavigation
 import com.mindgate.mindgateapp.ui.navigation.MainScreens
 import com.mindgate.mindgateapp.ui.navigation.mainNavGraph
 import com.mindgate.mindgateapp.ui.navigation.onboardNavGraph
-import com.mindgate.mindgateapp.ui.screens.main.Home.HomeScreen
-import com.mindgate.mindgateapp.ui.screens.onboarding.LoginScreen
 import com.mindgate.mindgateapp.ui.screens.waiting.LoadingScreen
 import com.mindgate.mindgateapp.ui.theme.MindgateTheme
 import com.mindgate.mindgateapp.viewmodels.OnboardingViewModel
 import com.permissionx.guolindev.PermissionX
-import com.zegocloud.uikit.ZegoUIKit
-import com.zegocloud.uikit.internal.ZegoUIKitLanguage
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
-import com.zegocloud.uikit.prebuilt.call.core.invite.ZegoCallInvitationData
-import com.zegocloud.uikit.prebuilt.call.event.CallEndListener
-import com.zegocloud.uikit.prebuilt.call.event.ErrorEventsListener
-import com.zegocloud.uikit.prebuilt.call.event.SignalPluginConnectListener
-import com.zegocloud.uikit.prebuilt.call.event.ZegoCallEndReason
-import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationConfig
-import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationConfig.generateDefaultConfig
-import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoTranslationText
-import com.zegocloud.uikit.prebuilt.call.invite.internal.ZegoUIKitPrebuiltCallConfigProvider
 import dagger.hilt.android.AndroidEntryPoint
-import im.zego.zim.enums.ZIMConnectionEvent
-import im.zego.zim.enums.ZIMConnectionState
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import org.json.JSONObject
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
@@ -86,6 +59,8 @@ class MainActivity : FragmentActivity() {
                         MainScreens.Community.route
                     )
                 }
+                val vm = hiltViewModel<OnboardingViewModel>()
+                val currentUser by vm.currentUser.collectAsState()
 
                 // Only show bar if current route is in the list
                 val showBottomBar = currentRoute in bottomBarRoutes
@@ -117,7 +92,10 @@ class MainActivity : FragmentActivity() {
                     // 5. STATIC NAVHOST: Do not use state variables for startDestination
                     NavHost(
                         navController = navController,
-                        startDestination = RootRoutes.ONBOARD,
+                        startDestination = when(currentUser){
+                            null -> RootRoutes.ONBOARD
+                            else -> RootRoutes.LOADING
+                        },
                         modifier = Modifier // Padding is applied inside specific graphs now
                     ) {
 
@@ -140,10 +118,9 @@ class MainActivity : FragmentActivity() {
                             // 1. Get the ViewModel
                             // Note: Since OnboardingViewModel holds the currentUser flow and Repository is likely Singleton,
                             // a new instance here is fine, OR use hiltViewModel(this@MainActivity) if you want to share.
-                            val vm = hiltViewModel<OnboardingViewModel>()
 
                             // 2. Observe the User
-                            val currentUser by vm.currentUser.collectAsState()
+
 
                             // 3. Render the UI
                             LoadingScreen(modifier = Modifier.padding(innerPadding),vm){

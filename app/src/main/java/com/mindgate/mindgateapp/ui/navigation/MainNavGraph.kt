@@ -6,7 +6,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
 import com.mindgate.mindgateapp.RootRoutes
 import com.mindgate.mindgateapp.ui.screens.main.AIChat.AIChatScreen
 import com.mindgate.mindgateapp.ui.screens.main.Community.CommunityScreen
@@ -19,7 +18,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.navigation.compose.navigation
-import com.mindgate.mindgateapp.di.ZegoCallManager
+import com.mindgate.mindgateapp.ui.screens.main.Profile.ProfileScreen
+import com.mindgate.mindgateapp.viewmodels.HomeViewModel
 
 
 fun NavGraphBuilder.mainNavGraph(
@@ -78,8 +78,14 @@ fun NavGraphBuilder.mainNavGraph(
             }
         }
     ) {
-        composable(MainScreens.Home.route) {
-            HomeScreen(modifier)
+        composable(MainScreens.Home.route) {backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(RootRoutes.MAIN)
+            }
+            val sharedHomeViewModel = hiltViewModel<HomeViewModel>(parentEntry)
+            HomeScreen(modifier,sharedHomeViewModel){
+                navController.navigate(MainScreens.ProfileScreen.route)
+            }
         }
 
         composable(MainScreens.AIScreen.route) {
@@ -118,6 +124,20 @@ fun NavGraphBuilder.mainNavGraph(
         composable(MainScreens.Community.route) {
             CommunityScreen()
         }
+        composable(MainScreens.ProfileScreen.route) {backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(RootRoutes.MAIN)
+            }
+            val sharedHomeViewModel = hiltViewModel<HomeViewModel>(parentEntry)
+            ProfileScreen(vm = sharedHomeViewModel) {
+                sharedHomeViewModel.signOut()
+                navController.navigate(RootRoutes.ONBOARD) {
+                    popUpTo(RootRoutes.MAIN) {
+                        inclusive = true
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -127,6 +147,7 @@ sealed class MainScreens(val route: String){
     object Professional : MainScreens("professional")
     object Community : MainScreens("community")
     object BookSession : MainScreens("book_session")
+    object ProfileScreen : MainScreens("profile_screen")
 }
 
 

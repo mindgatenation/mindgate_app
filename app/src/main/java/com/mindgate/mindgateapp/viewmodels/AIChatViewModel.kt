@@ -1,6 +1,5 @@
 package com.mindgate.mindgateapp.viewmodels
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.mindgate.mindgateapp.data.dao.AiChat
 import  com.mindgate.mindgateapp.data.dao.Pair
 import dagger.hilt.android.lifecycle.HiltViewModel

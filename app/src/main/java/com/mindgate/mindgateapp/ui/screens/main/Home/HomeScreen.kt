@@ -1,9 +1,6 @@
 package com.mindgate.mindgateapp.ui.screens.main.Home
 
-import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -19,29 +16,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.mindgate.mindgateapp.BuildConfig
-import com.mindgate.mindgateapp.MainActivity
 import com.mindgate.mindgateapp.accentColor
-import com.mindgate.mindgateapp.di.ZegoCallManager
 import com.mindgate.mindgateapp.med_font
+import com.mindgate.mindgateapp.reg_font
 import com.mindgate.mindgateapp.ui.components.HomeTopBar
 import com.mindgate.mindgateapp.ui.components.UpcomingSessionCard
-import com.mindgate.mindgateapp.ui.components.UpcomingSessionItem
 import com.mindgate.mindgateapp.viewmodels.HomeViewModel
-import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 import kotlinx.coroutines.launch
+
+
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier, // Contains padding from Main Activity
-    vm: HomeViewModel = hiltViewModel(),
+    vm: HomeViewModel,
+    onProfileClick : () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
@@ -74,7 +66,9 @@ fun HomeScreen(
                 // Just use default Modifier or specific styling for the bar.
                 modifier = Modifier,
                 vm = vm
-            ) { }
+            ) {
+                onProfileClick()
+            }
         }
     ) { innerPadding ->
 
@@ -92,19 +86,23 @@ fun HomeScreen(
                 color = accentColor,
                 modifier= Modifier.padding(horizontal = 20.dp)
             )
-            Spacer(modifier = Modifier.height(10.dp))
-            UpcomingSessionCard(currSessions, onCallConnect = { button, profEmail ->
-                Log.d("HomeScreen", "onCallConnect: $profEmail")
-                if (targetUserId.isNotEmpty()) {
-                    button.setInvitees(
-                        mutableListOf(
-                            ZegoUIKitUser(
-                                profEmail, profEmail
-                            )
-                        )
-                    )
-                }
-            }
+            Spacer(modifier = Modifier.height(20.dp))
+            UpcomingSessionCard(currSessions)
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = "Explore!",
+                fontFamily = med_font,
+                fontSize = 27.sp,
+                color = accentColor,
+                modifier= Modifier.padding(horizontal = 20.dp)
+            )
+            Spacer(modifier = Modifier.height(5.dp))
+            Text(
+                text = "Find more ways to explore yourself!",
+                fontFamily = reg_font,
+                fontSize = 15.sp,
+                color = accentColor,
+                modifier= Modifier.padding(horizontal = 20.dp)
             )
         }
     }

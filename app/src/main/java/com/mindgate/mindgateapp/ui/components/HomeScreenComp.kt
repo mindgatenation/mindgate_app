@@ -1,8 +1,6 @@
 package com.mindgate.mindgateapp.ui.components
 
-import android.se.omapi.Session
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,14 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDownward
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.East
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.Videocam
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,7 +38,7 @@ import com.zegocloud.uikit.prebuilt.call.invite.widget.ZegoSendCallInvitationBut
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 
 @Composable
-fun UpcomingSessionCard(sessions: List<Sessions>, onCallConnect: (ZegoSendCallInvitationButton, String) -> Unit, modifier: Modifier = Modifier) {
+fun UpcomingSessionCard(sessions: List<Sessions>, modifier: Modifier = Modifier) {
         LazyRow(modifier = modifier,
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(horizontal = 20.dp)
@@ -57,7 +48,7 @@ fun UpcomingSessionCard(sessions: List<Sessions>, onCallConnect: (ZegoSendCallIn
                     name = "test$index",
                     type = "profesional",
                     rating = 3.9,
-                    imgUrl = "",
+                    imgUrl = "https://img.freepik.com/free-photo/mid-shot-woman-therapist-with-clipboard_23-2148759113.jpg",
                     session = sessions[index]
                 )
             }
@@ -116,13 +107,13 @@ fun UpcomingSessionItem(
                 fontFamily = reg_font,
                 fontSize = 11.sp,
                 color = accentColor.copy(0.5f),
-                modifier = Modifier.width(200.dp)
+                modifier = Modifier.width(200.dp),
+                style = TextStyle()
             )
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // Down Arrow Button
         Box(
             modifier = Modifier
                 .size(40.dp)
@@ -131,13 +122,6 @@ fun UpcomingSessionItem(
                 ,
             contentAlignment = Alignment.Center
         ) {
-//            Icon(
-//                imageVector = if (sessionType == SessionType.AUDIO_SESSION) Icons.Default.Call else
-//                    Icons.Default.Videocam,
-//                contentDescription = null,
-//                tint = accentColor,
-//                modifier = Modifier.size(20.dp)
-//            )
             CallButton(
                 isVideoCall = session.sessionType == SessionType.VIDEO_SESSION,
                 session.professionEmail

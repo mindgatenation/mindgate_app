@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mindgate.mindgateapp.BuildConfig
 import com.mindgate.mindgateapp.data.dao.Sessions
-import com.mindgate.mindgateapp.data.dao.User
 import com.mindgate.mindgateapp.data.firebase.FirebaseAuthRepository
 import com.mindgate.mindgateapp.data.repo.SessionsRepository
 import com.mindgate.mindgateapp.di.ZegoCallManager

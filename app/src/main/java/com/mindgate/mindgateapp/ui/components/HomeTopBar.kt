@@ -1,14 +1,15 @@
 package com.mindgate.mindgateapp.ui.components
 
-import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,13 +24,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.mindgate.mindgateapp.R
 import com.mindgate.mindgateapp.accentColor
-import com.mindgate.mindgateapp.baseColor
-import com.mindgate.mindgateapp.med_font
 import com.mindgate.mindgateapp.mindgate_logo
 import com.mindgate.mindgateapp.reg_font
 import com.mindgate.mindgateapp.semibold_font
 import com.mindgate.mindgateapp.viewmodels.HomeViewModel
+import java.time.LocalDateTime
 
 @Composable
 fun HomeTopBar(
@@ -38,15 +39,26 @@ fun HomeTopBar(
     onProfileClick : () -> Unit
 ) {
     val currUser = vm.currentUser.collectAsState()
-    Row(
-        modifier = modifier
-            .fillMaxWidth() // Ensure row fills width to push items apart
-            .padding(horizontal = 20.dp, vertical = 10.dp), // Added vertical padding for spacing
-        horizontalArrangement = Arrangement.SpaceBetween, // Pushes Profile to left, Button to right
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center) {
+    val greetingText = when(LocalDateTime.now().hour){
+        in 0..11 -> "Good Morning"
+        in 12..16 -> "Good Afternoon"
+        else -> "Good Evening"
+    }
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Image(
+            painterResource(R.drawable.mid_graffiti),
+            contentDescription = null,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+        )
+        Column(
+            modifier = modifier
+                .fillMaxWidth() // Ensure row fills width to push items apart
+                .padding(
+                    horizontal = 20.dp,
+                    vertical = 10.dp
+                ), // Added vertical padding for spacing
+        ) {
             Row(
                 modifier = Modifier
                     .padding(vertical = 15.dp),
@@ -67,30 +79,34 @@ fun HomeTopBar(
                 )
 
             }
-            Text(
-                text = "Hello,\n${currUser.value?.name}",
-                fontFamily = reg_font,
-                color = accentColor,
-                fontSize = 18.sp,
-            )
-        }
-        Spacer(modifier = Modifier.weight(1f))
-        AsyncImage(
-            model = currUser.value?.profile_pic,
-            contentDescription = "Profile Picture",
-            modifier = Modifier
-                .size(50.dp)
-                .border(
-                    width = 4.dp,
-                    color = accentColor,//.copy(0.7f),
-                    shape = RoundedCornerShape(50.dp)
+            Spacer(modifier = Modifier.height(10.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "${greetingText},\n${currUser.value?.name?.split(" ")[0]}",
+                    fontFamily = reg_font,
+                    color = accentColor,
+                    fontSize = 18.sp,
                 )
-                .clip(RoundedCornerShape(50.dp))
-                .clickable{
-                    onProfileClick()
-                }
-            , // Clip image to circle
-            contentScale = ContentScale.Crop,
-        )
+                AsyncImage(
+                    model = currUser.value?.profile_pic,
+                    contentDescription = "Profile Picture",
+                    modifier = Modifier
+                        .size(50.dp)
+                        .border(
+                            width = 4.dp,
+                            color = accentColor,//.copy(0.7f),
+                            shape = RoundedCornerShape(50.dp)
+                        )
+                        .clip(RoundedCornerShape(50.dp))
+                        .clickable {
+                            onProfileClick()
+                        }, // Clip image to circle
+                    contentScale = ContentScale.Crop,
+                )
+            }
+        }
     }
 }

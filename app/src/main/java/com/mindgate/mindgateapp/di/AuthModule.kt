@@ -1,7 +1,5 @@
 package com.mindgate.mindgateapp.di
 
-import android.content.Context
-import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.firebase.auth.FirebaseAuth

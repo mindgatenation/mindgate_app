@@ -1,11 +1,8 @@
 package com.mindgate.mindgateapp.viewmodels
 
-import android.app.Application
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -14,14 +11,14 @@ import androidx.credentials.exceptions.NoCredentialException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import com.mindgate.mindgateapp.BuildConfig
 import com.mindgate.mindgateapp.data.repo.AuthRepository
-import com.mindgate.mindgateapp.di.ZegoCallManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+
+
 sealed class LoginState {
     object Idle : LoginState()
     object Loading : LoginState()
