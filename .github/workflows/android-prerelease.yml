@@ -5,6 +5,9 @@ on:
     tags:
       - "v*-alpha"
       - "v*-beta"
+      
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -44,6 +47,10 @@ jobs:
 
       - name: Build APK
         run: ./gradlew assembleRelease
+        
+      - name: List APK outputs
+        run: |
+          find app/build/outputs -type f
 
       - name: Upload APK to GitHub Release
         uses: softprops/action-gh-release@v2
