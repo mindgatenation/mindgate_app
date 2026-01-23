@@ -88,6 +88,7 @@ fun AIChatScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(WindowInsets.navigationBars.asPaddingValues())
                         .background(Color.White)
                         // Add IME padding so keyboard pushes this up
                         .imePadding()
