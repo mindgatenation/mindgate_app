@@ -23,6 +23,16 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Create gradle.properties
+        run: |
+          echo "WEB_CLIENT_ID=${{ secrets.WEB_CLIENT_ID }}" >> gradle.properties
+          echo "ZEGOCLOUD_APP_ID=${{ secrets.ZEGOCLOUD_APP_ID }}" >> gradle.properties
+          echo "ZEGOCLOUD_APP_SIGN=${{ secrets.ZEGOCLOUD_APP_SIGN }}" >> gradle.properties
+
+      - name: Decode google-services.json
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > app/google-services.json
+
       - name: Build APK
         run: ./gradlew assembleRelease
 
