@@ -1,6 +1,5 @@
 package com.mindgate.mindgateapp
 
-import android.Manifest
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -30,7 +29,6 @@ import com.mindgate.mindgateapp.ui.navigation.onboardNavGraph
 import com.mindgate.mindgateapp.ui.screens.waiting.LoadingScreen
 import com.mindgate.mindgateapp.ui.theme.MindgateTheme
 import com.mindgate.mindgateapp.viewmodels.OnboardingViewModel
-import com.permissionx.guolindev.PermissionX
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -43,14 +41,11 @@ class MainActivity : FragmentActivity() {
         setContent {
             val navController = rememberNavController()
             val snackbarHostState = remember { SnackbarHostState() }
-
-            // 1. OBSERVE ROUTE: Get the current route to determine visibility
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
 
 
             MindgateTheme {
-                // 2. DEFINE VISIBILITY: Create a list of routes where the BottomBar should show
                 val bottomBarRoutes = remember {
                     listOf(
                         MainScreens.Home.route,
@@ -62,21 +57,17 @@ class MainActivity : FragmentActivity() {
                 val vm = hiltViewModel<OnboardingViewModel>()
                 val currentUser by vm.currentUser.collectAsState()
 
-                // Only show bar if current route is in the list
                 val showBottomBar = currentRoute in bottomBarRoutes
 
                 Scaffold(
                     snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
-                        // 3. CONDITIONALLY SHOW: No need for "startDest" state
                         if (showBottomBar) {
                             MindgateBottomNavigation(
                                 currentRoute = currentRoute ?: MainScreens.Home.route,
                                 onItemSelected = { route ->
                                     navController.navigate(route) {
-                                        // 4. FIX POPUP LOGIC: Pop to the start of the MAIN graph,
-                                        // not the absolute root of the app.
                                         popUpTo(MainScreens.Home.route) {
                                             saveState = true
                                         }
@@ -89,17 +80,15 @@ class MainActivity : FragmentActivity() {
                         }
                     }
                 ) { innerPadding ->
-                    // 5. STATIC NAVHOST: Do not use state variables for startDestination
                     NavHost(
                         navController = navController,
                         startDestination = when(currentUser){
                             null -> RootRoutes.ONBOARD
-                            else -> RootRoutes.LOADING
+                            else -> RootRoutes.MAIN
                         },
-                        modifier = Modifier // Padding is applied inside specific graphs now
+                        modifier = Modifier
                     ) {
 
-                        // 1. ONBOARDING GRAPH
                         onboardNavGraph(
                             navController = navController,
                             modifier = Modifier.padding(innerPadding),
@@ -113,39 +102,17 @@ class MainActivity : FragmentActivity() {
                             }
                         )
 
-                        // 2. NEW: LOADING SCREEN ROUTE
                         composable(RootRoutes.LOADING) {
-                            // 1. Get the ViewModel
-                            // Note: Since OnboardingViewModel holds the currentUser flow and Repository is likely Singleton,
-                            // a new instance here is fine, OR use hiltViewModel(this@MainActivity) if you want to share.
-
-                            // 2. Observe the User
-
-
-                            // 3. Render the UI
-                            LoadingScreen(modifier = Modifier.padding(innerPadding),vm){
-                                // --- CHANGE: Navigate to MAIN instead of LOADING ---
-                                navController.navigate(RootRoutes.MAIN){
-                                    popUpTo(RootRoutes.LOADING){inclusive = true}
-                                }
-                            }
-
-                            // 4. Logic: Wait for User != null, then go to Main
+                            LoadingScreen(modifier = Modifier.padding(innerPadding))
                             LaunchedEffect(currentUser) {
-                                // Only proceed if we have a valid user object
                                 if (currentUser != null) {
-                                    // Optional: Add a small delay so the user actually sees your cool animation
-                                    // otherwise it might flash too fast if the internet is fast.
                                     delay(2000)
-
                                     navController.navigate(RootRoutes.MAIN) {
                                         popUpTo(RootRoutes.LOADING) { inclusive = true }
                                     }
                                 }
                             }
                         }
-
-                        // 3. MAIN GRAPH
                         mainNavGraph(
                             navController = navController,
                             modifier = Modifier.padding(innerPadding)
@@ -154,30 +121,19 @@ class MainActivity : FragmentActivity() {
                 }
             }
         }
-        permissionHandling(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         ZegoUIKitPrebuiltCallService.unInit()
     }
-
-    private fun permissionHandling(activityContext: FragmentActivity) {
-        PermissionX.init(activityContext).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
-            .onExplainRequestReason { scope, deniedList ->
-                val message =
-                    "We need your consent for the following permissions in order to use the offline call function properly"
-                scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
-            }.request { allGranted, grantedList, deniedList -> }
-    }
-
 }
 
 
 object RootRoutes {
     const val ONBOARD = "onboard_graph"
     const val MAIN = "main_graph"
-    const val LOADING = "loading_screen" // <-
+    const val LOADING = "loading_screen"
 }
 
 @Preview(showBackground = true)

@@ -1,4 +1,4 @@
-package com.mindgate.mindgateapp.data.Session
+package com.mindgate.mindgateapp.data.mongo
 
 import android.util.Log
 import com.mindgate.mindgateapp.data.dao.SessionType
@@ -25,9 +25,14 @@ class MongoSessionRepository () : SessionsRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getSessionInfo(sessionId: String) {
+    override suspend fun getSessionInfo(sessionId: String) : Sessions? {
         Log.w("MongoSessionRepository", "THIS IS A TEST REPOSITORY")
-
+        temp_sessions.forEach {
+            if (it.sessionId == sessionId) {
+                return it
+            }
+        }
+        return null
     }
 
 }

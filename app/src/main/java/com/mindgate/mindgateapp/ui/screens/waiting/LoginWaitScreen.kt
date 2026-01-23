@@ -31,8 +31,6 @@ import com.mindgate.mindgateapp.viewmodels.OnboardingViewModel
 @Composable
 fun LoadingScreen(
     modifier : Modifier,
-    vm: OnboardingViewModel ,
-    onLoginSuccess: () -> Unit
 ) {
     // List of messages to cycle through
     val loadingMessages = listOf(
@@ -43,14 +41,6 @@ fun LoadingScreen(
     )
 
     var messageIndex by remember { mutableIntStateOf(0) }
-
-    val loginState by vm.loginState.collectAsState() // Assuming you added this from previous advice
-
-    LaunchedEffect(loginState) {
-        if (loginState is LoginState.Success) {
-            onLoginSuccess() // This takes us to RootRoutes.LOADING
-        }
-    }
 
     // Cycle through messages every 2 seconds
     LaunchedEffect(Unit) {

@@ -1,6 +1,7 @@
 package com.mindgate.mindgateapp.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.East
+import androidx.compose.material.icons.filled.NorthEast
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -38,7 +44,11 @@ import com.zegocloud.uikit.prebuilt.call.invite.widget.ZegoSendCallInvitationBut
 import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 
 @Composable
-fun UpcomingSessionCard(sessions: List<Sessions>, modifier: Modifier = Modifier) {
+fun UpcomingSessionCard(
+    sessions: List<Sessions>,
+    onSessionClick : (Sessions) -> Unit = {},
+    modifier: Modifier = Modifier
+) {
         LazyRow(modifier = modifier,
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(horizontal = 20.dp)
@@ -49,7 +59,9 @@ fun UpcomingSessionCard(sessions: List<Sessions>, modifier: Modifier = Modifier)
                     type = "profesional",
                     rating = 3.9,
                     imgUrl = "https://img.freepik.com/free-photo/mid-shot-woman-therapist-with-clipboard_23-2148759113.jpg",
-                    session = sessions[index]
+                    onSessionClick = {
+                        onSessionClick(sessions[index])
+                    }
                 )
             }
         }
@@ -62,7 +74,7 @@ fun UpcomingSessionItem(
     type: String,
     rating: Double,
     imgUrl: String,
-    session : Sessions
+    onSessionClick : () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -119,13 +131,22 @@ fun UpcomingSessionItem(
                 .size(40.dp)
                 .clip(CircleShape)
                 .background(Color.White)
+                .clickable{
+                    onSessionClick()
+                }
                 ,
             contentAlignment = Alignment.Center
         ) {
-            CallButton(
-                isVideoCall = session.sessionType == SessionType.VIDEO_SESSION,
-                session.professionEmail
+            Icon(
+                imageVector = Icons.Default.NorthEast,
+                contentDescription = null,
+                tint = accentColor,
             )
+
+//            CallButton(
+//                isVideoCall = session.sessionType == SessionType.VIDEO_SESSION,
+//                session.professionEmail
+//            )
         }
     }
 }

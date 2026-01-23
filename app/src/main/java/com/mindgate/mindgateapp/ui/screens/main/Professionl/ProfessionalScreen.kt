@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mindgate.mindgateapp.accentColor
 import com.mindgate.mindgateapp.data.dao.Professional
+import com.mindgate.mindgateapp.data.mongo.sampleProfessional
 import com.mindgate.mindgateapp.med_font
 import com.mindgate.mindgateapp.reg_font
 import com.mindgate.mindgateapp.semibold_font
@@ -45,17 +46,6 @@ fun ProfessionalScreen(
     // Store the clicked professional so the sheet knows who to display
     var selectedProfessional by remember { mutableStateOf<Professional?>(null) }
 
-    // Dummy Data
-    val sampleProfessional = Professional(
-        id = "1",
-        name = "Sarah Black",
-        type = "Physiologists",
-        description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
-        imgUrl = "https://annemariesegal.com/wp-content/uploads/2017/04/adobestock_86346713-cropped-young-woman-in-suit.jpg?w=1680",
-        rating = 4.0,
-        price = 499,
-        tags = listOf("Anxiety", "Stress", "Relationship")
-    )
 
     Scaffold(
         modifier = modifier.fillMaxSize(),

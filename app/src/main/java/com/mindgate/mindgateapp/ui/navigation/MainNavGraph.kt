@@ -17,7 +17,10 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.navigation.NavType
 import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
+import com.mindgate.mindgateapp.ui.screens.main.BeforeSession.BeforeJoin
 import com.mindgate.mindgateapp.ui.screens.main.Profile.ProfileScreen
 import com.mindgate.mindgateapp.viewmodels.HomeViewModel
 
@@ -26,7 +29,6 @@ fun NavGraphBuilder.mainNavGraph(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    // 1. Define the visual order of your Bottom Nav tabs
     val tabOrder = listOf(
         MainScreens.Home.route,
         MainScreens.AIScreen.route,
@@ -38,7 +40,6 @@ fun NavGraphBuilder.mainNavGraph(
         startDestination = MainScreens.Home.route,
         route = RootRoutes.MAIN,
 
-        // 2. Logic for New Screen entering
         enterTransition = {
             val initialIndex = tabOrder.indexOf(initialState.destination.route)
             val targetIndex = tabOrder.indexOf(targetState.destination.route)
@@ -83,7 +84,12 @@ fun NavGraphBuilder.mainNavGraph(
                 navController.getBackStackEntry(RootRoutes.MAIN)
             }
             val sharedHomeViewModel = hiltViewModel<HomeViewModel>(parentEntry)
-            HomeScreen(modifier,sharedHomeViewModel){
+            HomeScreen(modifier,sharedHomeViewModel, onSessionClick = {
+                navController.navigate(
+                    MainScreens.BeforeJoinScreen.route
+                        .replace("{sessionId}", it.sessionId)
+                )
+            }){
                 navController.navigate(MainScreens.ProfileScreen.route)
             }
         }
@@ -138,6 +144,23 @@ fun NavGraphBuilder.mainNavGraph(
                 }
             }
         }
+        composable(
+            route = MainScreens.BeforeJoinScreen.route,
+            arguments = listOf(
+                navArgument("sessionId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+
+            val sessionId = backStackEntry.arguments?.getString("sessionId")!!
+
+            BeforeJoin(
+                sessionId = sessionId,
+                modifier = modifier
+            )
+        }
+
     }
 }
 
@@ -148,6 +171,7 @@ sealed class MainScreens(val route: String){
     object Community : MainScreens("community")
     object BookSession : MainScreens("book_session")
     object ProfileScreen : MainScreens("profile_screen")
+    object BeforeJoinScreen : MainScreens("before_join/{sessionId}")
 }
 
 

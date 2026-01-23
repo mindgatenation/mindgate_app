@@ -10,5 +10,6 @@ data class Sessions(
     val sessionType: SessionType,
     val professionEmail : String,
     val userEmail : String,
-    val callDuration: Long
+    val callDuration: Long,
+    val dateTime : Long = System.currentTimeMillis()
 )

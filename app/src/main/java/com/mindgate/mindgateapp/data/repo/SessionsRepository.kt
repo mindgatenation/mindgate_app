@@ -10,5 +10,5 @@ interface SessionsRepository {
 
     suspend fun initSessionListener(email : String, onChange : (List<Sessions>))
 
-    suspend fun getSessionInfo(sessionId : String)
+    suspend fun getSessionInfo(sessionId : String): Sessions?
 }
