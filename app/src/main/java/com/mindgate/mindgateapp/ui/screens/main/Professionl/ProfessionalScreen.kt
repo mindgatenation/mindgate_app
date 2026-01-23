@@ -80,7 +80,10 @@ fun ProfessionalScreen(
         },
         bottomBar = {
             Box(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .padding(WindowInsets.navigationBars.asPaddingValues())
+                    .fillMaxWidth()
+                ,
                 contentAlignment = Alignment.Center
             ) {
                 FilterSortBar()

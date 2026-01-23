@@ -57,7 +57,8 @@ fun MindgateBottomNavigation(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 10.dp)
+            .padding(WindowInsets.navigationBars.asPaddingValues())
+            .padding(horizontal = 16.dp)
             .height(70.dp), // Adjust height as needed
         color = NavContainerColor,
         shape = RoundedCornerShape(50.dp),
