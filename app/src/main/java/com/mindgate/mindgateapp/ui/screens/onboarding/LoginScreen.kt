@@ -1,5 +1,6 @@
 package com.mindgate.mindgateapp.ui.screens.onboarding
 
+import android.app.Activity
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -65,6 +66,7 @@ fun LoginScreen(
     onSignUpClick : () -> Unit
 ) {
     val context = LocalContext.current
+    val activity = context as? Activity
 
     val loginState by vm.loginState.collectAsState()
 
@@ -185,7 +187,9 @@ fun LoginScreen(
                     .align(Alignment.CenterHorizontally)
                     .padding(vertical = 5.dp, horizontal = 5.dp)
             ) {
-                vm.signInWithGoogle(context)
+                activity?.let {
+                    vm.signInWithGoogle(activity)
+                }
             }
 
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {

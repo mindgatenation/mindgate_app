@@ -44,7 +44,6 @@ fun HomeScreen(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
-        permissionHandling(context as FragmentActivity)
         coroutineScope.launch {
             vm.setCurrSessions("")
         }
@@ -115,15 +114,6 @@ fun HomeScreen(
             )
         }
     }
-}
-
-fun permissionHandling(activityContext: FragmentActivity) {
-    PermissionX.init(activityContext).permissions(Manifest.permission.SYSTEM_ALERT_WINDOW)
-        .onExplainRequestReason { scope, deniedList ->
-            val message =
-                "We need your consent for the following permissions in order to use the offline call function properly"
-            scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
-        }.request { allGranted, grantedList, deniedList -> }
 }
 
 @Preview

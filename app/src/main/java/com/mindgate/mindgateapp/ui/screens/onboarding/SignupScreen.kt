@@ -1,5 +1,6 @@
 package com.mindgate.mindgateapp.ui.screens.onboarding
 
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -46,6 +47,7 @@ fun SignupScreen(
 ) {
     // --- State Variables ---
     val context = LocalContext.current
+    val activity = context as? Activity
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     var username by remember { mutableStateOf("") }
@@ -162,8 +164,10 @@ fun SignupScreen(
                             .clip(RoundedCornerShape(12.dp))
                             .background(inputBgColor)
                             .clickable {
-                                vm.signInWithGoogle(context)
-                                onGoogleConnect()
+                                activity?.let {
+                                    vm.signInWithGoogle(activity)
+                                    onGoogleConnect()
+                                }
                             }
                             .border(1.dp, Color.LightGray.copy(0.5f), RoundedCornerShape(12.dp)),
                         contentAlignment = Alignment.Center
