@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.ApkSigningConfig
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -44,9 +45,22 @@ android {
         val ZEGOCLOUD_APP_SIGN = getLocalProperty("ZEGOCLOUD_APP_SIGN", rootProject.projectDir)
         buildConfigField("String","ZEGOCLOUD_APP_SIGN", "\"$ZEGOCLOUD_APP_SIGN\"")
     }
+    signingConfigs {
+        create("release") {
+            // Read keystore details from environment variables
+            val storeFilePath = System.getenv("KEYSTORE_PATH")
+            if (storeFilePath != null) {
+                storeFile = file(storeFilePath)
+            }
+            storePassword = System.getenv("KEYSTORE_PASSWORD")
+            keyAlias = System.getenv("KEY_ALIAS")
+            keyPassword = System.getenv("KEY_PASSWORD")
+        }
+    }
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

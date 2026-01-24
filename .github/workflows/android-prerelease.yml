@@ -41,11 +41,17 @@ jobs:
 
       - run: cat gradle.properties
 
-      - name: Decode google-services.json
+      - name: Decode google-services and keystore
         run: |
           echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > app/google-services.json
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > release.jks
 
       - name: Build APK
+        env:
+          KEYSTORE_PATH: release.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew assembleRelease
         
       - name: List APK outputs
@@ -56,4 +62,4 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           prerelease: true
-          files: app/build/outputs/apk/release/app-release-unsigned.apk
+          files: app/build/outputs/apk/release/app-release.apk
