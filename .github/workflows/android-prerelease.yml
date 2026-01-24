@@ -26,20 +26,15 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Write gradle.properties
+      - name: Write local.properties
         run: |
-          cat > gradle.properties <<EOF
-          org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
-          android.useAndroidX=true
-          kotlin.code.style=official
-          android.nonTransitiveRClass=true
-
+          cat > local.properties <<EOF
           WEB_CLIENT_ID=${{ secrets.WEB_CLIENT_ID }}
           ZEGOCLOUD_APP_ID=${{ secrets.ZEGOCLOUD_APP_ID }}
           ZEGOCLOUD_APP_SIGN=${{ secrets.ZEGOCLOUD_APP_SIGN }}
           EOF
 
-      - run: cat gradle.properties
+      - run: cat local.properties
 
       - name: Decode google-services and keystore
         run: |
